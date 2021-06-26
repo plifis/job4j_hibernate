@@ -16,9 +16,9 @@
         <property name="use_sql_comments">true</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
 
-        <mapping class="ru.job4j.hibernate.many.CarModel"/>
-        <mapping class="ru.job4j.hibernate.many.CarMark"/>
         <mapping class="ru.job4j.hibernate.manytomany.Book"/>
         <mapping class="ru.job4j.hibernate.manytomany.Author"/>
+        <mapping class="ru.job4j.hibernate.lazy.CarModel"/>
+        <mapping class="ru.job4j.hibernate.lazy.CarMark"/>
     </session-factory>
 </hibernate-configuration>
