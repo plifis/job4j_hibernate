@@ -17,19 +17,18 @@ public class HbmRunnerLazy {
             SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
             Session session = sf.openSession();
             session.beginTransaction();
-
-            list = session.createQuery("from CarMark ").list();
-            for (CarMark mark : list) {
-                for (CarModel model : mark.getList()) {
-                    System.out.println(model);
-                }
-            }
+            list = session.createQuery("select distinct m from CarMark m join fetch m.list").list();
             session.getTransaction().commit();
             session.close();
         }  catch (Exception e) {
             e.printStackTrace();
         } finally {
             StandardServiceRegistryBuilder.destroy(registry);
+        }
+        for (CarMark mark : list) {
+            for (CarModel model : mark.getList()) {
+                System.out.println(model);
+            }
         }
 
     }
