@@ -27,9 +27,11 @@ public class Runner {
 
         session.getTransaction().commit();
         session.beginTransaction();
+
+
         Query select  = session.createQuery("from Candidate");
         for (Object c : select.getResultList()) {
-            System.out.println("All candidates!!! " + c.toString());
+            System.out.println("All candidates!!! " + c);
         }
 
         Query selectId = session.createQuery("from Candidate c where c.id = :cId ")
@@ -39,7 +41,7 @@ public class Runner {
         Query selectName = session.createQuery("from Candidate c where c.name = :cName")
                 .setParameter("cName", "Bill");
         for (Object c : selectName.getResultList()) {
-            System.out.println("Candidate = Bill!!! " + c.toString());
+            System.out.println("Candidate = Bill!!! " + c);
         }
 
         session.createQuery("update Candidate c set " +
@@ -48,19 +50,17 @@ public class Runner {
                 .setParameter("newSalary", 150f)
                 .setParameter("cId", 1)
                 .executeUpdate();
-
-        System.out.println("Update id = 1 " + session.createQuery("from Candidate ").list().get(0).toString());
+        System.out.println("Update id = 1 " + session.createQuery("from Candidate ").list().get(0));
 
 
         session.createQuery("delete from Candidate  where id = :oldId").setParameter("oldId", 2);
-        System.out.println("Result delete id = 2 " + session.createQuery("from Candidate ").list().get(0).toString());
+        System.out.println("Result delete id = 2 " + session.createQuery("from Candidate ").list().get(0));
 
         session.createQuery("insert into Candidate (name, experience, salary) " +
                 "select concat('super', c.name), c.experience * 2, c.salary * 3 " +
                 "from Candidate c where c.id = :cId").setParameter("cId", Integer.MAX_VALUE).executeUpdate();
-
         for (Object c : session.createQuery("from Candidate").list()) {
-            System.out.println("Insert into " + c.toString());
+            System.out.println("Insert into " + c);
         }
 
         session.close();
