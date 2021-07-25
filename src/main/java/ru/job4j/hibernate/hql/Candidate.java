@@ -14,14 +14,18 @@ public class Candidate {
     private int experience;
     private float salary;
 
+    @OneToOne (fetch = FetchType.LAZY)
+    private BaseVacancy base;
+
     public Candidate() {
 
     }
 
-    public Candidate(String name, int experience, float salary) {
+    public Candidate(String name, int experience, float salary, BaseVacancy base) {
         this.name = name;
         this.experience = experience;
         this.salary = salary;
+        this.base = base;
     }
 
     public int getId() {
@@ -54,6 +58,14 @@ public class Candidate {
 
     public void setSalary(float salary) {
         this.salary = salary;
+    }
+
+    public BaseVacancy getBase() {
+        return base;
+    }
+
+    public void setBase(BaseVacancy base) {
+        this.base = base;
     }
 
     @Override

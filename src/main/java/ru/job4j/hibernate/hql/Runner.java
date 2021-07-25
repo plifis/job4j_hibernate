@@ -5,9 +5,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.sql.OracleJoinFragment;
 
 import javax.persistence.Query;
+import java.util.List;
 
 
 public class Runner {
@@ -17,10 +17,18 @@ public class Runner {
         SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         Session session = sf.openSession();
         session.beginTransaction();
-        Candidate one = new Candidate("Nikita", 5, 100f);
-        Candidate two = new Candidate("Alex", 7, 50.5f);
-        Candidate three = new Candidate("Bill", 0, 0.5f);
+        BaseVacancy baseVacancy = new BaseVacancy();
+        Candidate one = new Candidate("Nikita", 5, 100f, baseVacancy);
+        Candidate two = new Candidate("Alex", 7, 50.5f, baseVacancy);
+        Candidate three = new Candidate("Bill", 0, 0.5f, baseVacancy);
+        Vacancy java = new Vacancy("Java developer", 75f);
+        Vacancy sales = new Vacancy("Sales", 100f);
 
+        session.save(java);
+        session.save(sales);
+        session.save(baseVacancy);
+        baseVacancy.addVacancy(java);
+        baseVacancy.addVacancy(sales);
         session.save(one);
         session.save(two);
         session.save(three);
@@ -50,11 +58,15 @@ public class Runner {
                 .setParameter("newSalary", 150f)
                 .setParameter("cId", 1)
                 .executeUpdate();
-        System.out.println("Update id = 1 " + session.createQuery("from Candidate ").list().get(0));
+        System.out.println("Update id = 1 " + session.createQuery("from Candidate where id = 1"));
 
 
-        session.createQuery("delete from Candidate  where id = :oldId").setParameter("oldId", 2);
-        System.out.println("Result delete id = 2 " + session.createQuery("from Candidate ").list().get(0));
+        session.createQuery("delete from Candidate  where id = :oldId")
+                .setParameter("oldId", 2)
+                .executeUpdate();
+        for (Object c : session.createQuery("from Candidate ").list()) {
+            System.out.println("Result delete id = 2 " + c);
+        }
 
         session.createQuery("insert into Candidate (name, experience, salary) " +
                 "select concat('super', c.name), c.experience * 2, c.salary * 3 " +
@@ -63,7 +75,6 @@ public class Runner {
             System.out.println("Insert into " + c);
         }
 
-        session.close();
 
     }
 }
